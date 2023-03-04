@@ -1,0 +1,289 @@
+definitions:
+  models.AddChat:
+    properties:
+      name:
+        example: Super Chat
+        type: string
+      users:
+        items:
+          type: string
+        type: array
+    type: object
+  models.AddUser:
+    properties:
+      login:
+        example: User
+        type: string
+      name:
+        example: User
+        type: string
+      password:
+        example: password
+        type: string
+      phone:
+        example: "+78005553535"
+        type: string
+    type: object
+  models.Chat:
+    properties:
+      createdAt:
+        example: "1662070156"
+        type: string
+      id:
+        type: integer
+      messages:
+        items:
+          $ref: '#/definitions/models.Message'
+        type: array
+      name:
+        example: Super Chat
+        type: string
+      users:
+        items:
+          type: string
+        type: array
+    type: object
+  models.DeleteMessage:
+    properties:
+      messageId:
+        type: integer
+    type: object
+  models.EditMessage:
+    properties:
+      messageId:
+        type: integer
+      text:
+        type: string
+    type: object
+  models.GetMessages:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+  models.Login:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.Message:
+    properties:
+      createdAt:
+        type: string
+      editedAt:
+        type: string
+      id:
+        type: integer
+      responseId:
+        type: integer
+      text:
+        type: string
+      userId:
+        type: string
+    type: object
+  models.ReplyMessage:
+    properties:
+      replyMessageId:
+        type: integer
+      text:
+        type: string
+    type: object
+  models.SendMessage:
+    properties:
+      text:
+        type: string
+    type: object
+  models.User:
+    properties:
+      bio:
+        example: What are you taking about?
+        type: string
+      createdAt:
+        example: "1662070156"
+        type: string
+      lastOnline:
+        example: "1662070156"
+        type: string
+      name:
+        example: John
+        type: string
+      nickname:
+        example: Nickname
+        type: string
+      phone:
+        example: "+78005553535"
+        type: string
+    type: object
+  models.WsMessage:
+    properties:
+      action:
+        type: string
+      payload:
+        properties:
+          deleteMessage:
+            $ref: '#/definitions/models.DeleteMessage'
+          editMessage:
+            $ref: '#/definitions/models.EditMessage'
+          getMessages:
+            $ref: '#/definitions/models.GetMessages'
+          replyMessage:
+            $ref: '#/definitions/models.ReplyMessage'
+          sendMessage:
+            $ref: '#/definitions/models.SendMessage'
+        type: object
+    type: object
+info:
+  contact: {}
+  title: Application Api
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: healthy
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - General
+  /chat:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: chat params
+        in: body
+        name: chat
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddChat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: created chat
+          schema:
+            $ref: '#/definitions/models.Chat'
+      summary: create chat
+      tags:
+      - Chat
+  /chat/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ws struct
+        in: body
+        name: struct
+        schema:
+          $ref: '#/definitions/models.WsMessage'
+      produces:
+      - application/json
+      responses:
+        "101":
+          description: ""
+      summary: upgrade request to ws
+      tags:
+      - Chat
+  /chats:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of chats for current user
+          schema:
+            items:
+              $ref: '#/definitions/models.Chat'
+            type: array
+      summary: Get all chats
+      tags:
+      - Chat
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: logged in user
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Login user
+      tags:
+      - Auth
+  /logout:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Logout user
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: register user
+      tags:
+      - Auth
+  /user/{username}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: get user by username
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
