@@ -6,3 +6,9 @@ type Character struct {
 	Damage    float32
 	Ability   string
 }
+
+type UpdateCharacter struct {
+}
+
+type AddCharacter struct {
+}

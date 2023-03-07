@@ -2,6 +2,7 @@ package webapi
 
 import (
 	"DummyGameBackend/internal/resolver"
+	_ "DummyGameBackend/webapi/docs"
 	"DummyGameBackend/webapi/models"
 	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -33,9 +34,14 @@ func NewWebapi(db *gorm.DB) *WebApi {
 
 func (w *WebApi) Start() {
 	w.resolver = resolver.NewResolver(w.database)
-	go w.run()
+	w.run()
 }
 
+// @Title     Application Api
+// @Version   1.0
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func (w *WebApi) run() {
 	address := fmt.Sprintf("%s:%d", viper.Get("api.address"), viper.Get("api.port"))
 
@@ -63,10 +69,14 @@ func (w *WebApi) run() {
 	router.POST("/login", authMiddleware.LoginHandler)
 	router.POST("/register", w.RegisterHandler())
 	authGroup.GET("/logout", authMiddleware.LogoutHandler)
-	authGroup.GET("/user", w.GetUser())
+
+	authGroup.GET("/characters", w.Characters())
+	authGroup.GET("/character/{id}", w.Character())
+	authGroup.GET("/character/create", w.CreateCharacter())
+	authGroup.GET("/character/update", w.UpdateCharacter())
+	authGroup.GET("/character/delete", w.DeleteCharacter())
 
 	err = router.Run(address)
-	//err := router.RunTLS(address, "./server-cert.pem", "./server-key.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,9 +95,18 @@ func (w *WebApi) HandlePing() gin.HandlerFunc {
 	}
 }
 
-func (w *WebApi) GetUser() gin.HandlerFunc {
+// LoginPostHandler  godoc
+// @Summary     Login user
+// @Tags        Auth
+// @Accept      json
+// @Produce     json
+// @Param       credentials body models.Login true "credentials"
+// @Success     200 {object} models.User "logged in user"
+// @Error       500 {string} string
+// @Error       404 {string} string
+// @Router      /login [post]
+func (w *WebApi) LoginPostHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
 	}
 }
 
@@ -113,5 +132,80 @@ func (w *WebApi) RegisterHandler() gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"content": "Failed to register"})
 		}
+	}
+}
+
+// Characters  godoc
+// @Summary     get all user characters
+// @Tags        Character
+// @Accept      json
+// @Produce     json
+// @Param       user body models.AddUser true "user"
+// @Success     200
+// @Error       500 {string} string
+// @Router      /register [post]
+func (w *WebApi) Characters() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
+	}
+}
+
+// Character  godoc
+// @Summary     get character with id
+// @Tags        Character
+// @Accept      json
+// @Produce     json
+// @Param       id path int true "character id"
+// @Success     200
+// @Error       500 {string} string
+// @Router      /character [get]
+func (w *WebApi) Character() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
+	}
+}
+
+// CreateCharacter  godoc
+// @Summary     register user
+// @Tags        Character
+// @Accept      json
+// @Produce     json
+// @Param       character body models.AddCharacter true "character"
+// @Success     200
+// @Error       500 {string} string
+// @Router      /character/create [post]
+func (w *WebApi) CreateCharacter() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
+	}
+}
+
+// UpdateCharacter  godoc
+// @Summary     register user
+// @Tags        Character
+// @Accept      json
+// @Produce     json
+// @Param       character body models.UpdateCharacter true "character"
+// @Success     200
+// @Error       500 {string} string
+// @Router      /character/update [post]
+func (w *WebApi) UpdateCharacter() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
+	}
+}
+
+// DeleteCharacter  godoc
+// @Summary     register user
+// @Tags        Character
+// @Accept      json
+// @Produce     json
+// @Param       id path int true "character id"
+// @Success     200
+// @Error       500 {string} string
+// @Router      /character/delete [post]
+func (w *WebApi) DeleteCharacter() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
 	}
 }

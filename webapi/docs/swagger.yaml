@@ -1,139 +1,41 @@
 definitions:
-  models.AddChat:
-    properties:
-      name:
-        example: Super Chat
-        type: string
-      users:
-        items:
-          type: string
-        type: array
+  models.AddCharacter:
     type: object
   models.AddUser:
     properties:
-      login:
-        example: User
-        type: string
       name:
-        example: User
         type: string
       password:
-        example: password
-        type: string
-      phone:
-        example: "+78005553535"
         type: string
     type: object
-  models.Chat:
+  models.Character:
     properties:
-      createdAt:
-        example: "1662070156"
+      ability:
         type: string
-      id:
-        type: integer
-      messages:
-        items:
-          $ref: '#/definitions/models.Message'
-        type: array
+      damage:
+        type: number
+      maxHealth:
+        type: number
       name:
-        example: Super Chat
         type: string
-      users:
-        items:
-          type: string
-        type: array
-    type: object
-  models.DeleteMessage:
-    properties:
-      messageId:
-        type: integer
-    type: object
-  models.EditMessage:
-    properties:
-      messageId:
-        type: integer
-      text:
-        type: string
-    type: object
-  models.GetMessages:
-    properties:
-      limit:
-        type: integer
-      offset:
-        type: integer
     type: object
   models.Login:
     properties:
+      login:
+        type: string
       password:
         type: string
-      username:
-        type: string
     type: object
-  models.Message:
-    properties:
-      createdAt:
-        type: string
-      editedAt:
-        type: string
-      id:
-        type: integer
-      responseId:
-        type: integer
-      text:
-        type: string
-      userId:
-        type: string
-    type: object
-  models.ReplyMessage:
-    properties:
-      replyMessageId:
-        type: integer
-      text:
-        type: string
-    type: object
-  models.SendMessage:
-    properties:
-      text:
-        type: string
+  models.UpdateCharacter:
     type: object
   models.User:
     properties:
-      bio:
-        example: What are you taking about?
-        type: string
-      createdAt:
-        example: "1662070156"
-        type: string
-      lastOnline:
-        example: "1662070156"
-        type: string
+      characters:
+        items:
+          $ref: '#/definitions/models.Character'
+        type: array
       name:
-        example: John
         type: string
-      nickname:
-        example: Nickname
-        type: string
-      phone:
-        example: "+78005553535"
-        type: string
-    type: object
-  models.WsMessage:
-    properties:
-      action:
-        type: string
-      payload:
-        properties:
-          deleteMessage:
-            $ref: '#/definitions/models.DeleteMessage'
-          editMessage:
-            $ref: '#/definitions/models.EditMessage'
-          getMessages:
-            $ref: '#/definitions/models.GetMessages'
-          replyMessage:
-            $ref: '#/definitions/models.ReplyMessage'
-          sendMessage:
-            $ref: '#/definitions/models.SendMessage'
-        type: object
     type: object
 info:
   contact: {}
@@ -154,61 +56,80 @@ paths:
       summary: Health check
       tags:
       - General
-  /chat:
+  /character:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: character id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: get character with id
+      tags:
+      - Character
+  /character/create:
     post:
       consumes:
       - application/json
       parameters:
-      - description: chat params
+      - description: character
         in: body
-        name: chat
+        name: character
         required: true
         schema:
-          $ref: '#/definitions/models.AddChat'
+          $ref: '#/definitions/models.AddCharacter'
       produces:
       - application/json
       responses:
         "200":
-          description: created chat
-          schema:
-            $ref: '#/definitions/models.Chat'
-      summary: create chat
+          description: OK
+      summary: register user
       tags:
-      - Chat
-  /chat/{id}:
-    get:
+      - Character
+  /character/delete:
+    post:
       consumes:
       - application/json
       parameters:
-      - description: ws struct
-        in: body
-        name: struct
-        schema:
-          $ref: '#/definitions/models.WsMessage'
-      produces:
-      - application/json
-      responses:
-        "101":
-          description: ""
-      summary: upgrade request to ws
-      tags:
-      - Chat
-  /chats:
-    get:
-      consumes:
-      - application/json
+      - description: character id
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: list of chats for current user
-          schema:
-            items:
-              $ref: '#/definitions/models.Chat'
-            type: array
-      summary: Get all chats
+          description: OK
+      summary: register user
       tags:
-      - Chat
+      - Character
+  /character/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: character
+        in: body
+        name: character
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCharacter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: register user
+      tags:
+      - Character
   /login:
     post:
       consumes:
@@ -230,18 +151,6 @@ paths:
       summary: Login user
       tags:
       - Auth
-  /logout:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ""
-      summary: Logout user
-      tags:
-      - Auth
   /register:
     post:
       consumes:
@@ -257,30 +166,10 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
-      summary: register user
-      tags:
-      - Auth
-  /user/{username}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: username
-        in: path
-        name: username
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
           description: OK
-          schema:
-            $ref: '#/definitions/models.User'
-      summary: get user by username
+      summary: get all user characters
       tags:
-      - User
+      - Character
 securityDefinitions:
   BearerAuth:
     in: header
