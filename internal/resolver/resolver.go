@@ -13,7 +13,7 @@ type Resolver struct {
 
 func NewResolver(database *gorm.DB) *Resolver {
 	return &Resolver{
-		log:      log.New(os.Stderr, "resolver", log.LstdFlags),
+		log:      log.New(os.Stderr, "[Resolver] ", log.LstdFlags),
 		database: database,
 	}
 }

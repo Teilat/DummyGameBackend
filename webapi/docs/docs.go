@@ -37,34 +37,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/character": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Character"
-                ],
-                "summary": "get character with id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "character id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/character/create": {
             "post": {
                 "consumes": [
@@ -76,7 +48,7 @@ const docTemplate = `{
                 "tags": [
                     "Character"
                 ],
-                "summary": "register user",
+                "summary": "create character",
                 "parameters": [
                     {
                         "description": "character",
@@ -95,7 +67,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/character/delete": {
+        "/character/delete/{id}": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -106,7 +78,7 @@ const docTemplate = `{
                 "tags": [
                     "Character"
                 ],
-                "summary": "register user",
+                "summary": "delete character",
                 "parameters": [
                     {
                         "type": "integer",
@@ -134,7 +106,7 @@ const docTemplate = `{
                 "tags": [
                     "Character"
                 ],
-                "summary": "register user",
+                "summary": "update character",
                 "parameters": [
                     {
                         "description": "character",
@@ -144,6 +116,53 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.UpdateCharacter"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/characters": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Character"
+                ],
+                "summary": "get all user characters",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/character{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Character"
+                ],
+                "summary": "get character with id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "character id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -195,9 +214,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Character"
+                    "Auth"
                 ],
-                "summary": "get all user characters",
+                "summary": "register user",
                 "parameters": [
                     {
                         "description": "user",
@@ -245,6 +264,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "user": {
                     "type": "string"
                 }
             }

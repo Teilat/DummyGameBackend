@@ -67,11 +67,11 @@ func (w *WebApi) run() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/swagger", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.POST("/login", authMiddleware.LoginHandler)
-	router.POST("/register", w.RegisterHandler())
+	router.POST("/register", w.Register())
 	authGroup.GET("/logout", authMiddleware.LogoutHandler)
 
 	authGroup.GET("/characters", w.Characters())
-	authGroup.GET("/character/{id}", w.Character())
+	authGroup.GET("/character/{id}", w.GetCharacter())
 	authGroup.GET("/character/create", w.CreateCharacter())
 	authGroup.GET("/character/update", w.UpdateCharacter())
 	authGroup.GET("/character/delete", w.DeleteCharacter())
@@ -95,7 +95,7 @@ func (w *WebApi) HandlePing() gin.HandlerFunc {
 	}
 }
 
-// LoginPostHandler  godoc
+// Login  godoc
 // @Summary     Login user
 // @Tags        Auth
 // @Accept      json
@@ -105,12 +105,12 @@ func (w *WebApi) HandlePing() gin.HandlerFunc {
 // @Error       500 {string} string
 // @Error       404 {string} string
 // @Router      /login [post]
-func (w *WebApi) LoginPostHandler() gin.HandlerFunc {
+func (w *WebApi) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 	}
 }
 
-// RegisterHandler  godoc
+// Register  godoc
 // @Summary     register user
 // @Tags        Auth
 // @Accept      json
@@ -119,7 +119,7 @@ func (w *WebApi) LoginPostHandler() gin.HandlerFunc {
 // @Success     200
 // @Error       500 {string} string
 // @Router      /register [post]
-func (w *WebApi) RegisterHandler() gin.HandlerFunc {
+func (w *WebApi) Register() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var user models.AddUser
 		err := c.BindJSON(&user)
@@ -130,6 +130,7 @@ func (w *WebApi) RegisterHandler() gin.HandlerFunc {
 
 		err = w.resolver.CreateUser(user)
 		if err != nil {
+			w.logger.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"content": "Failed to register"})
 		}
 	}
@@ -140,17 +141,16 @@ func (w *WebApi) RegisterHandler() gin.HandlerFunc {
 // @Tags        Character
 // @Accept      json
 // @Produce     json
-// @Param       user body models.AddUser true "user"
 // @Success     200
 // @Error       500 {string} string
-// @Router      /register [post]
+// @Router      /characters [get]
 func (w *WebApi) Characters() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.String(http.StatusOK, "OK")
 	}
 }
 
-// Character  godoc
+// GetCharacter  godoc
 // @Summary     get character with id
 // @Tags        Character
 // @Accept      json
@@ -158,15 +158,15 @@ func (w *WebApi) Characters() gin.HandlerFunc {
 // @Param       id path int true "character id"
 // @Success     200
 // @Error       500 {string} string
-// @Router      /character [get]
-func (w *WebApi) Character() gin.HandlerFunc {
+// @Router      /character{id} [get]
+func (w *WebApi) GetCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.String(http.StatusOK, "OK")
 	}
 }
 
 // CreateCharacter  godoc
-// @Summary     register user
+// @Summary     create character
 // @Tags        Character
 // @Accept      json
 // @Produce     json
@@ -181,7 +181,7 @@ func (w *WebApi) CreateCharacter() gin.HandlerFunc {
 }
 
 // UpdateCharacter  godoc
-// @Summary     register user
+// @Summary     update character
 // @Tags        Character
 // @Accept      json
 // @Produce     json
@@ -196,14 +196,14 @@ func (w *WebApi) UpdateCharacter() gin.HandlerFunc {
 }
 
 // DeleteCharacter  godoc
-// @Summary     register user
+// @Summary     delete character
 // @Tags        Character
 // @Accept      json
 // @Produce     json
 // @Param       id path int true "character id"
 // @Success     200
 // @Error       500 {string} string
-// @Router      /character/delete [post]
+// @Router      /character/delete/{id} [post]
 func (w *WebApi) DeleteCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.String(http.StatusOK, "OK")

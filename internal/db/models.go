@@ -2,7 +2,7 @@ package db
 
 type User struct {
 	Id         uint32 `gorm:"primaryKey"`
-	Name       string
+	Name       string `gorm:"unique"`
 	PwHash     string
 	Characters []Character `gorm:"foreignKey:User"` // one to many
 }
