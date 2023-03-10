@@ -29,8 +29,6 @@ definitions:
         type: number
       name:
         type: string
-      user:
-        type: string
     type: object
   models.Login:
     properties:
