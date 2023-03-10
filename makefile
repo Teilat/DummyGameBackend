@@ -19,7 +19,7 @@ all: build
 build: windows linux ## Default: build for windows and linux
 
 gen-swagger:
-	cd ./webapi && swag init --parseDependency --parseInternal -g webapi.go
+	cd ./webapi && swag init --parseInternal -g webapi.go
 
 windows: vendor ## Build artifacts for windows
 	@printf $(PRINTF_FORMAT) BINARY_NAME: $(WIN_BINARY_NAME)

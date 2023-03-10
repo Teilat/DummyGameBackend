@@ -1,11 +1,11 @@
 package models
 
 type User struct {
-	Name       string
+	Login      string
 	Characters []Character
 }
 
 type AddUser struct {
-	Name     string
+	Login    string
 	Password string
 }

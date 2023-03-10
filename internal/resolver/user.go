@@ -4,6 +4,7 @@ import (
 	"DummyGameBackend/internal/db"
 	"DummyGameBackend/webapi/models"
 	"fmt"
+	"strings"
 )
 
 func (r *Resolver) GetUserByUsername(userName string) *db.User {
@@ -14,13 +15,17 @@ func (r *Resolver) GetUserByUsername(userName string) *db.User {
 
 func (r *Resolver) CreateUser(user models.AddUser) error {
 	var count int64
-	r.database.Model(&db.User{}).Where("name = ?", user.Name).Count(&count)
+	r.database.Model(&db.User{}).Where("name = ?", user.Login).Count(&count)
 	if count > 0 {
 		return fmt.Errorf("user with this name already exist")
 	}
 
+	if strings.TrimSpace(user.Login) == "" {
+		return fmt.Errorf("user with empty name not allowed")
+	}
+
 	res := r.database.Create(&db.User{
-		Name:   user.Name,
+		Name:   user.Login,
 		PwHash: user.Password,
 	})
 	if res.Error != nil {

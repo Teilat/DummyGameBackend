@@ -125,26 +125,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/characters": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Character"
-                ],
-                "summary": "get all user characters",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/character{id}": {
+        "/character/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -167,7 +148,35 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Character"
+                        }
+                    }
+                }
+            }
+        },
+        "/characters": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Character"
+                ],
+                "summary": "get all user characters",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Character"
+                            }
+                        }
                     }
                 }
             }
@@ -205,6 +214,25 @@ const docTemplate = `{
                 }
             }
         },
+        "/logout": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "consumes": [
@@ -238,12 +266,26 @@ const docTemplate = `{
     },
     "definitions": {
         "models.AddCharacter": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "ability": {
+                    "type": "string"
+                },
+                "damage": {
+                    "type": "number"
+                },
+                "maxHealth": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         },
         "models.AddUser": {
             "type": "object",
             "properties": {
-                "name": {
+                "login": {
                     "type": "string"
                 },
                 "password": {
@@ -259,6 +301,9 @@ const docTemplate = `{
                 },
                 "damage": {
                     "type": "number"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "maxHealth": {
                     "type": "number"
@@ -283,7 +328,24 @@ const docTemplate = `{
             }
         },
         "models.UpdateCharacter": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "ability": {
+                    "type": "string"
+                },
+                "damage": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "maxHealth": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         },
         "models.User": {
             "type": "object",
@@ -294,7 +356,7 @@ const docTemplate = `{
                         "$ref": "#/definitions/models.Character"
                     }
                 },
-                "name": {
+                "login": {
                     "type": "string"
                 }
             }

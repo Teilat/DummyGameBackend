@@ -95,6 +95,20 @@ func (w *WebApi) HandlePing() gin.HandlerFunc {
 	}
 }
 
+// Logout  godoc
+// @Summary     Logout user
+// @Tags        Auth
+// @Accept      json
+// @Produce     json
+// @Success     200
+// @Error       500 {string} string
+// @Error       404 {string} string
+// @Router      /logout [get]
+func (w *WebApi) Logout() gin.HandlerFunc {
+	return func(c *gin.Context) {
+	}
+}
+
 // Login  godoc
 // @Summary     Login user
 // @Tags        Auth
@@ -131,7 +145,7 @@ func (w *WebApi) Register() gin.HandlerFunc {
 		err = w.resolver.CreateUser(user)
 		if err != nil {
 			w.logger.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"content": "Failed to register"})
+			c.JSON(http.StatusInternalServerError, gin.H{"content": "Failed to register, " + err.Error()})
 		}
 	}
 }
@@ -141,12 +155,13 @@ func (w *WebApi) Register() gin.HandlerFunc {
 // @Tags        Character
 // @Accept      json
 // @Produce     json
-// @Success     200
+// @Success     200 {array} models.Character
 // @Error       500 {string} string
 // @Router      /characters [get]
 func (w *WebApi) Characters() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
+		claims := jwt.ExtractClaims(c)
+		c.JSON(http.StatusOK, w.resolver.GetAllCharacters(claims[jwt.IdentityKey].(string)))
 	}
 }
 
@@ -156,12 +171,13 @@ func (w *WebApi) Characters() gin.HandlerFunc {
 // @Accept      json
 // @Produce     json
 // @Param       id path int true "character id"
-// @Success     200
+// @Success     200 {object} models.Character
 // @Error       500 {string} string
-// @Router      /character{id} [get]
+// @Router      /character/{id} [get]
 func (w *WebApi) GetCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
+		claims := jwt.ExtractClaims(c)
+		c.JSON(http.StatusOK, w.resolver.GetCharacter(c.Param("id"), claims[jwt.IdentityKey].(string)))
 	}
 }
 
@@ -176,7 +192,14 @@ func (w *WebApi) GetCharacter() gin.HandlerFunc {
 // @Router      /character/create [post]
 func (w *WebApi) CreateCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
+		var char models.AddCharacter
+		err := c.BindJSON(&char)
+		if err != nil {
+			w.logger.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"content": "Failed to parse params"})
+		}
+		claims := jwt.ExtractClaims(c)
+		c.JSON(http.StatusOK, w.resolver.CreateCharacter(&char, claims[jwt.IdentityKey].(string)))
 	}
 }
 
@@ -191,7 +214,13 @@ func (w *WebApi) CreateCharacter() gin.HandlerFunc {
 // @Router      /character/update [post]
 func (w *WebApi) UpdateCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
+		var char models.UpdateCharacter
+		err := c.BindJSON(&char)
+		if err != nil {
+			w.logger.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"content": "Failed to parse params"})
+		}
+		c.JSON(http.StatusOK, w.resolver.UpdateCharacter(&char))
 	}
 }
 
@@ -206,6 +235,7 @@ func (w *WebApi) UpdateCharacter() gin.HandlerFunc {
 // @Router      /character/delete/{id} [post]
 func (w *WebApi) DeleteCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
+		claims := jwt.ExtractClaims(c)
+		c.JSON(http.StatusOK, w.resolver.DeleteCharacter(c.Param("id"), claims[jwt.IdentityKey].(string)))
 	}
 }

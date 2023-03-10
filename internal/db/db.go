@@ -48,6 +48,7 @@ func (db *DbProvider) StartDatabase() (*gorm.DB, error) {
 	if err != nil {
 		return nil, errors.New("error while connecting to database:" + err.Error())
 	}
+	db.log.Printf("Connected")
 	// creating tables from code models
 	err = database.AutoMigrate(&User{}, &Character{})
 	if err != nil {
