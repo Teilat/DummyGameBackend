@@ -17,3 +17,13 @@ func CharactersToApiCharacters(characters []*db.Character) []*models.Character {
 	}
 	return res
 }
+
+func CharacterToApiCharacter(character *db.Character) *models.Character {
+	return &models.Character{
+		Id:        character.Id,
+		Name:      character.Name,
+		MaxHealth: character.MaxHealth,
+		Damage:    character.Damage,
+		Ability:   character.Ability,
+	}
+}

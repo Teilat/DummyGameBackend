@@ -2,6 +2,7 @@ package webapi
 
 import (
 	"DummyGameBackend/internal/resolver"
+	"DummyGameBackend/webapi/converters"
 	_ "DummyGameBackend/webapi/docs"
 	"DummyGameBackend/webapi/models"
 	"fmt"
@@ -71,10 +72,10 @@ func (w *WebApi) run() {
 	authGroup.GET("/logout", authMiddleware.LogoutHandler)
 
 	authGroup.GET("/characters", w.Characters())
-	authGroup.GET("/character/{id}", w.GetCharacter())
-	authGroup.GET("/character/create", w.CreateCharacter())
-	authGroup.GET("/character/update", w.UpdateCharacter())
-	authGroup.GET("/character/delete", w.DeleteCharacter())
+	authGroup.GET("/character/:id", w.GetCharacter())
+	authGroup.POST("/character/create", w.CreateCharacter())
+	authGroup.POST("/character/update", w.UpdateCharacter())
+	authGroup.POST("/character/delete/:id", w.DeleteCharacter())
 
 	err = router.Run(address)
 	if err != nil {
@@ -177,7 +178,7 @@ func (w *WebApi) Characters() gin.HandlerFunc {
 func (w *WebApi) GetCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims := jwt.ExtractClaims(c)
-		c.JSON(http.StatusOK, w.resolver.GetCharacter(c.Param("id"), claims[jwt.IdentityKey].(string)))
+		c.JSON(http.StatusOK, converters.CharacterToApiCharacter(w.resolver.GetCharacter(c.Param("id"), claims[jwt.IdentityKey].(string))))
 	}
 }
 
@@ -214,13 +215,14 @@ func (w *WebApi) CreateCharacter() gin.HandlerFunc {
 // @Router      /character/update [post]
 func (w *WebApi) UpdateCharacter() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		claims := jwt.ExtractClaims(c)
 		var char models.UpdateCharacter
 		err := c.BindJSON(&char)
 		if err != nil {
 			w.logger.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"content": "Failed to parse params"})
 		}
-		c.JSON(http.StatusOK, w.resolver.UpdateCharacter(&char))
+		c.JSON(http.StatusOK, w.resolver.UpdateCharacter(&char, claims[jwt.IdentityKey].(string)))
 	}
 }
 

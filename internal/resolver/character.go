@@ -3,11 +3,16 @@ package resolver
 import (
 	"DummyGameBackend/internal/db"
 	"DummyGameBackend/webapi/models"
+	"fmt"
 )
 
 func (r *Resolver) GetAllCharacters(user string) []*db.Character {
 	res := make([]*db.Character, 0)
-	r.database.Where("user = ?", user).Find(&res)
+	resp := r.database.Find(&res, "user = ?", user)
+	if resp.Error != nil {
+		fmt.Println(resp.Error)
+	}
+
 	return res
 }
 
@@ -17,13 +22,14 @@ func (r *Resolver) GetCharacter(id string, user string) *db.Character {
 	return &character
 }
 
-func (r *Resolver) UpdateCharacter(character *models.UpdateCharacter) error {
+func (r *Resolver) UpdateCharacter(character *models.UpdateCharacter, user string) error {
 	char := db.Character{
 		Id:        character.Id,
 		Name:      character.Name,
 		MaxHealth: character.MaxHealth,
 		Damage:    character.Damage,
 		Ability:   character.Ability,
+		User:      user,
 	}
 
 	res := r.database.Save(char)

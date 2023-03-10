@@ -6,7 +6,6 @@ type Character struct {
 	MaxHealth float32
 	Damage    float32
 	Ability   string
-	User      string
 }
 
 type UpdateCharacter struct {
