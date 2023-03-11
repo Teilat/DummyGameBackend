@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"os"
 	"time"
@@ -36,6 +37,7 @@ func (db *DbProvider) StartDatabase() (*gorm.DB, error) {
 	var database *gorm.DB
 	var err error
 	database, err = gorm.Open(postgres.Open(db.connString), &gorm.Config{})
+	database.Logger.LogMode(logger.Info)
 
 	for i := 0; err != nil || i > db.retryCount; i++ {
 		db.log.Printf("Error while connecting error:%#v \nRetry №%d in %d seconds.\n", err.Error(), i, i*2)

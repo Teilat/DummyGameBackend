@@ -7,8 +7,8 @@ import (
 )
 
 func (r *Resolver) GetAllCharacters(user string) []*db.Character {
-	res := make([]*db.Character, 0)
-	resp := r.database.Find(&res, "user = ?", user)
+	var res []*db.Character
+	resp := r.database.Find(&res, "owner = ?", user)
 	if resp.Error != nil {
 		fmt.Println(resp.Error)
 	}
@@ -18,7 +18,7 @@ func (r *Resolver) GetAllCharacters(user string) []*db.Character {
 
 func (r *Resolver) GetCharacter(id string, user string) *db.Character {
 	character := db.Character{}
-	r.database.Where("id = ? AND user = ?", id, user).First(&character)
+	r.database.First(&character, "id = ? AND owner = ?", id, user)
 	return &character
 }
 
@@ -29,7 +29,7 @@ func (r *Resolver) UpdateCharacter(character *models.UpdateCharacter, user strin
 		MaxHealth: character.MaxHealth,
 		Damage:    character.Damage,
 		Ability:   character.Ability,
-		User:      user,
+		Owner:     user,
 	}
 
 	res := r.database.Save(char)
@@ -56,7 +56,7 @@ func (r *Resolver) CreateCharacter(character *models.AddCharacter, user string) 
 		MaxHealth: character.MaxHealth,
 		Damage:    character.Damage,
 		Ability:   character.Ability,
-		User:      user,
+		Owner:     user,
 	})
 	if res.Error != nil {
 		return res.Error

@@ -162,7 +162,7 @@ func (w *WebApi) Register() gin.HandlerFunc {
 func (w *WebApi) Characters() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims := jwt.ExtractClaims(c)
-		c.JSON(http.StatusOK, w.resolver.GetAllCharacters(claims[jwt.IdentityKey].(string)))
+		c.JSON(http.StatusOK, converters.CharactersToApiCharacters(w.resolver.GetAllCharacters(claims[jwt.IdentityKey].(string))))
 	}
 }
 

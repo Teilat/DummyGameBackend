@@ -6,9 +6,10 @@ import (
 )
 
 func CharactersToApiCharacters(characters []*db.Character) []*models.Character {
-	res := make([]*models.Character, len(characters))
+	res := make([]*models.Character, 0)
 	for _, c := range characters {
 		res = append(res, &models.Character{
+			Id:        c.Id,
 			Name:      c.Name,
 			MaxHealth: c.MaxHealth,
 			Damage:    c.Damage,
