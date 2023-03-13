@@ -62,7 +62,7 @@ func loginResponseFunc(w *WebApi) func(c *gin.Context, code int, message string,
 	return func(c *gin.Context, code int, message string, time time.Time) {
 		c.Writer.Header().Add("Access-Token", message)
 		c.Writer.Header().Add("Expire-Token", time.Format("2006-01-02 15:04:05"))
-		c.JSON(code, converters.UserToApiUser(w.resolver.GetUserByUsername(LoginUser)))
+		c.JSON(code, converters.UserToApiUser(w.resolver.GetUserByUsername(LoginUser), message, time.Format("2006-01-02 15:04:05")))
 	}
 }
 

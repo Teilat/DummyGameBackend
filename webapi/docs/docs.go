@@ -208,7 +208,7 @@ const docTemplate = `{
                     "200": {
                         "description": "logged in user",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.LoginResponse"
                         }
                     }
                 }
@@ -324,6 +324,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "expireToken": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                }
+            }
+        },
         "models.UpdateCharacter": {
             "type": "object",
             "properties": {
@@ -340,20 +354,6 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.User": {
-            "type": "object",
-            "properties": {
-                "characters": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Character"
-                    }
-                },
-                "login": {
                     "type": "string"
                 }
             }

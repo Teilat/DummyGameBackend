@@ -46,7 +46,7 @@ func (w *WebApi) Start() {
 func (w *WebApi) run() {
 	address := fmt.Sprintf("%s:%d", viper.Get("api.address"), viper.Get("api.port"))
 
-	authMiddleware, err := jwt.New(newJwtMiddleware(w, true))
+	authMiddleware, err := jwt.New(newJwtMiddleware(w, false))
 	if err != nil {
 		log.Fatal("JWT Error:" + err.Error())
 	}
@@ -116,7 +116,7 @@ func (w *WebApi) Logout() gin.HandlerFunc {
 // @Accept      json
 // @Produce     json
 // @Param       credentials body models.Login true "credentials"
-// @Success     200 {object} models.User "logged in user"
+// @Success     200 {object} models.LoginResponse "logged in user"
 // @Error       500 {string} string
 // @Error       404 {string} string
 // @Router      /login [post]

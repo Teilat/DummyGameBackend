@@ -5,8 +5,10 @@ import (
 	"DummyGameBackend/webapi/models"
 )
 
-func UserToApiUser(user *db.User) *models.User {
-	return &models.User{
-		Login: user.Name,
+func UserToApiUser(user *db.User, token, expire string) *models.LoginResponse {
+	return &models.LoginResponse{
+		Login:       user.Name,
+		AccessToken: token,
+		ExpireToken: expire,
 	}
 }
