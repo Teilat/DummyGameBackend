@@ -30,6 +30,13 @@ definitions:
       name:
         type: string
     type: object
+  models.Characters:
+    properties:
+      characters:
+        items:
+          $ref: '#/definitions/models.Character'
+        type: array
+    type: object
   models.Login:
     properties:
       login:
@@ -164,9 +171,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Character'
-            type: array
+            $ref: '#/definitions/models.Characters'
       summary: get all user characters
       tags:
       - Character

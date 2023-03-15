@@ -1,5 +1,9 @@
 package models
 
+type Characters struct {
+	Characters []*Character
+}
+
 type Character struct {
 	Id        uint32
 	Name      string

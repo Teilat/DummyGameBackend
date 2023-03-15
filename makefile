@@ -25,14 +25,12 @@ windows: vendor ## Build artifacts for windows
 	@printf $(PRINTF_FORMAT) BINARY_NAME: $(WIN_BINARY_NAME)
 	@printf $(PRINTF_FORMAT) BINARY_BUILD_DATE: $(BINARY_BUILD_DATE)
 	mkdir -p $(BUILD_FOLDER)/windows
-	#cp ./config.yaml $(BUILD_FOLDER)/windows
 	env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc  go build -ldflags "-s -w -X $(BINARY_NAME).Version=$(BINARY_VERSION) -X $(BINARY_NAME).BuildDate=$(BINARY_BUILD_DATE)" -o $(BUILD_FOLDER)/windows/$(WIN_BINARY_NAME) .
 
 linux: vendor ## Build artifacts for linux
 	@printf $(PRINTF_FORMAT) BINARY_NAME: $(BINARY_NAME)
 	@printf $(PRINTF_FORMAT) BINARY_BUILD_DATE: $(BINARY_BUILD_DATE)
 	mkdir -p $(BUILD_FOLDER)/linux
-	#cp ./config.yaml $(BUILD_FOLDER)/linux
 	env GOOS=linux GOARCH=amd64  go build -ldflags "-s -w -X $(BINARY_NAME).Version=$(BINARY_VERSION) -X $(BINARY_NAME).BuildDate=$(BINARY_BUILD_DATE)" -o $(BUILD_FOLDER)/linux/$(BINARY_NAME) .
 
 docker-build: linux ## Build artifacts for linux
@@ -47,7 +45,7 @@ docker-publish: docker-tag ## Build the container without caching
 	docker push $(DOCKER_REPO)/$(BINARY_NAME):latest
 
 docker-up: ## Build the container without caching
-	docker compose up --detach
+	docker compose up --detach --force-recreate
 
 vendor: ## Get dependencies according to go.sum
 	env GO111MODULE=auto go mod tidy

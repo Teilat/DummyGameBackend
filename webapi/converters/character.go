@@ -5,10 +5,10 @@ import (
 	"DummyGameBackend/webapi/models"
 )
 
-func CharactersToApiCharacters(characters []*db.Character) []*models.Character {
-	res := make([]*models.Character, 0)
+func CharactersToApiCharacters(characters []*db.Character) models.Characters {
+	res := models.Characters{}
 	for _, c := range characters {
-		res = append(res, &models.Character{
+		res.Characters = append(res.Characters, &models.Character{
 			Id:        c.Id,
 			Name:      c.Name,
 			MaxHealth: c.MaxHealth,

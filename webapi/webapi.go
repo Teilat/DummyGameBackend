@@ -156,7 +156,7 @@ func (w *WebApi) Register() gin.HandlerFunc {
 // @Tags        Character
 // @Accept      json
 // @Produce     json
-// @Success     200 {array} models.Character
+// @Success     200 {object} models.Characters
 // @Error       500 {string} string
 // @Router      /characters [get]
 func (w *WebApi) Characters() gin.HandlerFunc {
